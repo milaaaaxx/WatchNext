@@ -5,7 +5,7 @@ $pageTitle = "WatchNext";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $action = $_POST["action"] ?? "add";
-    if ($action === "mark-watched") {
+    if ($action === "mark_watched") {
         $id = filter_var($_POST["id"] ?? "", FILTER_VALIDATE_INT, ["options" => ["min_range" =>1]] );
     if ($id === false) {
         http_response_code(400);
@@ -90,15 +90,25 @@ $items = $statement->fetchAll();
                         <?= htmlspecialchars($item["title"], ENT_QUOTES, "UTF-8") ?>
                         —
                         <?= htmlspecialchars($item["type"], ENT_QUOTES, "UTF-8") ?>
-                        <?php if ($item["watched"]); ?>
-                         
-                    </li>
-                    <?php endforeach; ?>
+                        <?php if ($item["watched"]): ?>
+                         <p class="watch-status"> Watched - what's next? </p>
+                    <?php else: ?>
+                    <form method="post" class="watch-action">
+                        <button type="submit">Mark as watched</button>
+                        <input type="hidden" name="action" value="mark_watched">
+                        <input type="hidden"
+                        name="id"
+                        value="<?= (int)  $item["id"]?>"
+                        >
+                    </form>
+                    <?php endif; ?>
+                </li>
+                <?php endforeach; ?>
             </ul>
             <?php endif; ?>
     <?php if ($message !== ""): ?>
         <p><?=  htmlspecialchars($message, ENT_QUOTES, "UTF-8")  ?></p>
         <?php endif; ?>
-</main>
+        </main> 
     </body>
 </html>

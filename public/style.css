@@ -72,3 +72,11 @@ li{
     border-radius:10px;
     overflow-wrap: anywhere;
 }
+.watch-action{
+    margin-top: 12px;
+}
+.watch-status{
+    margin-bottom: 0;
+    color: #5c3287;
+    font-weight: bold;
+}
