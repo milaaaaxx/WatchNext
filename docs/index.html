@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Keep your movies and series in one watchlist and mark what you've watched.">
+    <title>WatchNext</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <main>
+        <h1>WatchNext</h1>
+        <p>Too many options, nothing to watch...</p>
+        <p>Your next obsession starts here</p>
+
+        <form id="watchlist-form">
+            <div>
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" maxlength="255" required>
+            </div>
+            <div>
+                <label for="type">Type</label>
+                <select name="type" id="type">
+                    <option value="movie">Movies</option>
+                    <option value="series">Series</option>
+                </select>
+            </div>
+            <button type="submit">Add to watchlist</button>
+        </form>
+
+        <p id="message" role="status"></p>
+        <h2>YOUR WATCHLIST BABY:&gt;</h2>
+        <p id="empty-message">Your watchlist is empty. Add your first movie or series!</p>
+        <ul id="watchlist"></ul>
+        <p class="storage-note">Saved in this browser. Your list stays here when you come back, unless you clear your browser data.</p>
+        <noscript>Please enable JavaScript to use your watchlist.</noscript>
+    </main>
+</body>
+</html>
