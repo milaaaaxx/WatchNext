@@ -34,10 +34,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         http_response_code(400);
         exit("invalid item");
     }
-    $statement =$pdo->prepare(
-        "UPDATE watchlist SET watched = 1 WHERE id = :id"
+    $watched = $action === "mark_watched" ? 1 : 0;
+
+    $statement = $pdo->prepare(
+        "UPDATE watchlist SET watched  = :watched WHERE id = :id"
     );
-    $statement->execute(["id" => $id]);
+    $statement->execute([
+        "watched" => $watched,
+        "id" => $id,
+    ]);
     header("Location: /", true, 303);
     exit;
     }  
