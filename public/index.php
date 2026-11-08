@@ -5,6 +5,33 @@ $pageTitle = "WatchNext";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $action = $_POST["action"] ?? "add";
+    if ($action === "rate") {
+
+        $id = filter_var(
+            $_POST["id"] ?? "",
+            FILTER_VALIDATE_INT,
+            ["options" => ["min_range" => 1]]
+        );
+        $rating = filter_var(
+            $_POST["rating"] ?? "",
+            FILTER_VALIDATE_INT,
+            ["options" => ["min_range" => 1, "max_range" => 5]]
+        );
+        if ($id === false || $rating === false) {
+            http_response_code(400);
+            exit("invalid item or rating.");
+        }
+        $statement = $pdo->prepare(
+            "UPDATE  watchlist  SET rating = :rating WHERE id = :id"
+        );
+        $statement->execute([
+            "rating" => $rating,
+            "id" => $id,
+        ]);
+        header("Location: /", true, 303);
+        exit;
+        }
+
     if ($action === "delete") {
         $id = filter_var(
             $_POST["id"] ?? "",
@@ -90,8 +117,9 @@ $items = $statement->fetchAll();
 </head>
 <body>
     <main>
+        <section class="entry-panel">
     <?=  $pageTitle ?>
-    <p> To many options, nothin to watch:< </p>
+    <p> Make a list of your movies/series that you waitin to ever watch!</p>
     <p> your next obsession starts here</p>
 
     <form method="post">
@@ -105,9 +133,11 @@ $items = $statement->fetchAll();
                 <option value="movie">Movies</option>
                 <option value="series">Series</option>
             </select>
-        </div>
+        </div>2
         <button type="submit">Add to watchlist</button>
     </form>
+</section>
+<section class="watchlist-panel">
     <h2>YOUR WATCHLIST BABY:></h2>
     <?php if (empty($items)): ?>
         <p>Your watchlist is empty! Addd your first movie or series..</p>
@@ -137,7 +167,7 @@ $items = $statement->fetchAll();
                         >
                     </form>
                     <?php endif; ?>
-                    <form class="watch-action" method="post">
+                    <form method="post" class="watch-action">
                         <input type="hidden" name="action" value="delete">
 
                         <input type="hidden" name="id" value="<?= (int) $item["id"] ?>"
@@ -145,6 +175,38 @@ $items = $statement->fetchAll();
 
                         <button type="submit">delete</button>
                     </form>
+
+                    <form method="post" class="watch-action">
+                        <input type="hidden" name="action" value="rate">
+                        <input type="hidden" name="id" value="<?= (int) $item["id"] ?>">
+                        
+                        <fieldset class="rating-field">
+                            <legend>Your rating</legend>
+
+                            <div class="star-rating">
+                                <?php for ($score = 5; $score >= 1; $score--): ?>
+                                <input 
+                                type="radio" 
+                                name="rating" 
+                                id="rating-<?= (int) $item["id"] ?>-<?= $score ?>"
+                               value="<?= $score ?>"
+                               <?= (int) $item["rating"] === $score ? "checked" : "" ?>
+                               required
+                               >
+                               <label
+                            
+                               for="rating-<?= (int) $item["id"] ?>-<?= $score ?>"
+                               >
+                               <span aria-hidden="true">★</span>
+                               <span class="visually-hidden">
+                                <?= $score ?> out of 5 stars
+                               </span>
+                               </label>
+                               <?php endfor; ?>
+                            </div>
+                     </fieldset>
+                     <button type="submit">Save Rating</button>
+                 </form>
                 </li>
                 <?php endforeach; ?>
             </ul>
@@ -152,6 +214,7 @@ $items = $statement->fetchAll();
     <?php if ($message !== ""): ?>
         <p><?=  htmlspecialchars($message, ENT_QUOTES, "UTF-8")  ?></p>
         <?php endif; ?>
+        </section>
         </main> 
     </body>
 </html>
