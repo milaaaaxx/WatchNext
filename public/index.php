@@ -5,11 +5,34 @@ $pageTitle = "WatchNext";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $action = $_POST["action"] ?? "add";
-    if ($action === "mark_watched") {
+    if ($action === "delete") {
+        $id = filter_var(
+            $_POST["id"] ?? "",
+            FILTER_VALIDATE_INT,
+            ["options" => ["min_range" => 1]]
+        );
+
+        if ($id === false) {
+            http_response_code(400);
+            exit("invalid item");
+        }
+
+        $watched = $action ===  "mark_watched" ? 1 : 0;
+
+        $statement = $pdo->prepare(
+            "DELETE from watchlist WHERE id = :id"
+        );
+
+        $statement->execute(["id" => $id]);
+
+        header("Location: /", true, 303);
+        exit;
+    }
+    if ($action === "mark_watched" || $action === "mark_unwatched") {
         $id = filter_var($_POST["id"] ?? "", FILTER_VALIDATE_INT, ["options" => ["min_range" =>1]] );
     if ($id === false) {
         http_response_code(400);
-        exit("invalid item"); 
+        exit("invalid item");
     }
     $statement =$pdo->prepare(
         "UPDATE watchlist SET watched = 1 WHERE id = :id"
@@ -17,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $statement->execute(["id" => $id]);
     header("Location: /", true, 303);
     exit;
-    }
+    }  
     $title = $_POST["title"] ?? "";
     $type = $_POST["type"] ?? "";
 
@@ -90,9 +113,11 @@ $items = $statement->fetchAll();
                         <?= htmlspecialchars($item["title"], ENT_QUOTES, "UTF-8") ?>
                         —
                         <?= htmlspecialchars($item["type"], ENT_QUOTES, "UTF-8") ?>
+
                         <?php if ($item["watched"]): ?>
                          <p class="watch-status"> Watched - what's next? </p>
-                    <?php else: ?>
+                    <?php else:  ?>
+
                     <form method="post" class="watch-action">
                         <button type="submit">Mark as watched</button>
                         <input type="hidden" name="action" value="mark_watched">
@@ -102,10 +127,18 @@ $items = $statement->fetchAll();
                         >
                     </form>
                     <?php endif; ?>
+                    <form class="watch-action" method="post">
+                        <input type="hidden" name="action" value="delete">
+
+                        <input type="hidden" name="id" value="<?= (int) $item["id"] ?>"
+                        >
+
+                        <button type="submit">delete</button>
+                    </form>
                 </li>
                 <?php endforeach; ?>
             </ul>
-            <?php endif; ?>
+            <?php endif; ?> 
     <?php if ($message !== ""): ?>
         <p><?=  htmlspecialchars($message, ENT_QUOTES, "UTF-8")  ?></p>
         <?php endif; ?>
