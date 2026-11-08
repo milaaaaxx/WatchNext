@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 $statement = $pdo->query(
-    "SELECT id, title, type, watched FROM watchlist ORDER BY id DESC"
+    "SELECT id, title, type, watched, rating FROM watchlist ORDER BY id DESC"
 );
 $items = $statement->fetchAll();
 
@@ -121,10 +121,15 @@ $items = $statement->fetchAll();
 
                         <?php if ($item["watched"]): ?>
                          <p class="watch-status"> Watched - what's next? </p>
+                         <form method="post" class="watch-action">
+                            <input type="hidden" name="action" value="mark_unwatched">
+                            <input type="hidden" name="id" value="<?=  (int) $item["id"]?>">
+                            <button type="submit"> Mark As Unwatched :3</button>
+                         </form>
                     <?php else:  ?>
 
                     <form method="post" class="watch-action">
-                        <button type="submit">Mark as watched</button>
+                        <button type="submit">Mark as watched LESS GOOO</button>
                         <input type="hidden" name="action" value="mark_watched">
                         <input type="hidden"
                         name="id"
