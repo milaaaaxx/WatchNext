@@ -3,16 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Keep your movies and series in one watchlist and mark what you've watched.">
+    <meta name="description" content="Keep your movies and series in one watchlist, track what you've watched and save your star ratings.">
     <title>WatchNext</title>
     <link rel="stylesheet" href="style.css">
     <script src="app.js" defer></script>
 </head>
 <body>
     <main>
-        <h1>WatchNext</h1>
-        <p>Too many options, nothing to watch...</p>
-        <p>Your next obsession starts here</p>
+        <section class="entry-panel" aria-labelledby="page-title">
+        <h1 id="page-title">WatchNext</h1>
+        <p>Make a list of your movies/series that you waitin to ever watch!</p>
+        <p>your next obsession starts here</p>
 
         <form id="watchlist-form">
             <div>
@@ -28,13 +29,16 @@
             </div>
             <button type="submit">Add to watchlist</button>
         </form>
+        </section>
 
+        <section class="watchlist-panel" aria-labelledby="list-title">
+        <h2 id="list-title">YOUR WATCHLIST BABY</h2>
         <p id="message" role="status"></p>
-        <h2>YOUR WATCHLIST BABY:&gt;</h2>
         <p id="empty-message">Your watchlist is empty. Add your first movie or series!</p>
         <ul id="watchlist"></ul>
         <p class="storage-note">Saved in this browser. Your list stays here when you come back, unless you clear your browser data.</p>
         <noscript>Please enable JavaScript to use your watchlist.</noscript>
+        </section>
     </main>
 </body>
 </html>

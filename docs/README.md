@@ -2,9 +2,16 @@ WatchNext browser demo
 ======================
 
 This version uses HTML, CSS and JavaScript so it can run on GitHub Pages.
-Add movies or series and mark them as watched. Each visitor's list is saved
+Add movies or series, delete titles, mark them as watched or unwatched,
+and choose one to five stars before clicking Save Rating. The layout has
+two white panels on a purple background, with a scrollable watchlist.
+On smaller screens the panels stack vertically.
+
+Each visitor's list is saved
 in their own browser with localStorage. It does not sync across devices or
 import the PHP version's database. Clearing browser data removes the list.
+Lists saved with the earlier browser version are kept, with no rating until
+one is saved. Posters and the unfinished TMDB integration are not included.
 
 The original PHP and MariaDB version lives in ../public/.
 
