@@ -1,5 +1,7 @@
 <?php 
 require_once __DIR__ . "/../config/database.php";
+require_once __DIR__ . "/../config/tmdb.php";
+
 $pageTitle = "WatchNext";
  $message = isset($_GET["added"]) ? "item added to watchlist" : "" ;
 
@@ -86,7 +88,52 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $message = "Please enter a title";
         } elseif (!in_array($type, ["movie", "series"], true)) {
             $message = "Please choose a movie or series";
-        } else{ 
+        } else { 
+
+$overview = null;
+$posterPath = null;
+
+$category = $type === "movie" ? "movie" : "tv";
+
+$query = http_build_query([
+    "query" => $title,
+    "language" => "en-US",
+    "include_adult" => "false",
+]);
+
+$url = "https://api.themoviedb.org/3/search/" . $category . "?" . $query;
+
+$request = curl_init($url);
+
+curl_setopt_array($request, [
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT => 10,
+    CURLOPT_HTTPHEADER => [
+        "Authorization: Bearer " . $tmdbToken,
+        "Accept: application/json",
+    ],
+]);
+
+$response = curl_exec($request);
+$status = curl_getinfo($request, CURLINFO_HTTP_CODE);
+
+if ($response !== false && $status === 200) {
+    $data = json_decode($response, true);
+    $matches = [];
+
+    foreach ($data["results"] ?? [] as $result) {
+        $foundTitle = $result["title"] ?? $result["name"] ?? "";
+
+        if (mb_strtolower(trim($foundTitle)) === mb_strtolower($title)) {
+            $matches[] = $result;
+        }
+    }
+
+    if (count($matches) === 1) {
+        $overview = $matches[0]["overview"] ?? null;
+        $posterPath = $matches[0]["poster_path"] ?? null;
+    }
+}
             $statement = $pdo->prepare(
                 "INSERT INTO watchlist (title, type) VALUES (:title, :type)"
             );
