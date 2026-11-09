@@ -111,7 +111,7 @@ $items = $statement->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> <?= $pageTitle ?> </title>
+   <h1> <title> <?= $pageTitle ?> </title></h1>
     <link rel="stylesheet" href="style.css">
      
 </head>
@@ -138,7 +138,7 @@ $items = $statement->fetchAll();
     </form>
 </section>
 <section class="watchlist-panel">
-    <h2>YOUR WATCHLIST BABY:></h2>
+    <h2>YOUR WATCHLIST BABY </h2>
     <?php if (empty($items)): ?>
         <p>Your watchlist is empty! Addd your first movie or series..</p>
         <?php else: ?>
@@ -150,16 +150,16 @@ $items = $statement->fetchAll();
                         <?= htmlspecialchars($item["type"], ENT_QUOTES, "UTF-8") ?>
 
                         <?php if ($item["watched"]): ?>
-                         <p class="watch-status"> Watched - what's next? </p>
+                         <p class="watch-status"> Watched - what's next? lol </p>
                          <form method="post" class="watch-action">
                             <input type="hidden" name="action" value="mark_unwatched">
                             <input type="hidden" name="id" value="<?=  (int) $item["id"]?>">
-                            <button type="submit"> Mark As Unwatched :3</button>
+                            <button type="submit"> Mark as unwatched</button>
                          </form>
                     <?php else:  ?>
 
                     <form method="post" class="watch-action">
-                        <button type="submit">Mark as watched LESS GOOO</button>
+                        <button type="submit">Mark as watched</button>
                         <input type="hidden" name="action" value="mark_watched">
                         <input type="hidden"
                         name="id"
